@@ -15,6 +15,7 @@ DHT dht(DHTPin, DHTTYPE);   // Initialize DHT sensor.
 float Temperature;          // temperature
 float Humidity;             // humidity
 float HeatIndex;            // Heatindex
+float Kelvin;
  
 //      web server
 #include <ESP8266WiFi.h>
@@ -38,6 +39,7 @@ void readDHT11(){
     float humidity = round(dht.readHumidity()*10)/10; // Gets the values of the humidity
     // Compute heat index in Celsius (isFahrenheit = false)
     float heatindex = round(dht.computeHeatIndex( Temperature, Humidity, false)*10)/10; 
+    float kelvin = round(temperature+273.15); // Gets the value of the temperature 
         
     if(isnan(temperature) || isnan(humidity) || isnan(heatindex)){
         // sensor error
@@ -48,6 +50,7 @@ void readDHT11(){
         Temperature = temperature;
         Humidity =  humidity ;
         HeatIndex = heatindex;
+        Kelvin = kelvin;
         // show in Serial Monitor
         Serial.print("Temp. ");
         Serial.print(Temperature);
@@ -88,7 +91,7 @@ void handleNotFound(){
 void handleSensor(){
   server.send(200, "text/html", "<h3>Duurzaam Huis: " 
    +  studentName + "</h3>Temperature " + String(Temperature) + 
-   " Celsius<br>Humidity " + String(Humidity) +  " %<br>Heatindex " + String(HeatIndex));
+   " Celsius<br>Humidity " + String(Humidity) + "<br>Kelvin: " + String(Kelvin) + " %<br>Heatindex " + String(HeatIndex));
   }
 
 void setup(){
